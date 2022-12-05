@@ -4,6 +4,7 @@ TAP **[PREVIEW LINK](https://andriifront.github.io/todoform-react-ts-router/)** 
 
 ## Technologies
  - REACT
+ - REDUX
  - Typescript
  - Router
  - Materialize

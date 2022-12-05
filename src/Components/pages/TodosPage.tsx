@@ -1,19 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { TodoForm } from '../../Components/TodoForm';
 import { TodoList } from '../../Components/TodoList';
-import { ITodo } from '../../interfaces';
+import { createTodo, deleteTodo } from '../../store/actions'
+import { doneTodo } from '../../store/actions'
+import { ITodo, TodosState } from '../../type';
+
+// declare var confirm: (question: string) => boolean
 
 export const TodosPage: React.FC = () => {
-  const [todos, setTodos] = useState<ITodo[]>([])
+  // const [todos, setTodos] = useState<ITodo[]>([])
   
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('todos') || '[]') as ITodo[]
-    setTodos(saved)
-  }, [])
+  // useEffect(() => {
+  //   const saved = JSON.parse(localStorage.getItem('todos') || '[]') as ITodo[]
+  //   setTodos(saved)
+  // }, [])
 
-  useEffect(() => (
-    localStorage.setItem('todos', JSON.stringify(todos))
-  ))
+  // useEffect(() => (
+  //   localStorage.setItem('todos', JSON.stringify(todos))
+  // ))
+  
+  const todos: ITodo[] = useSelector(
+    (state: TodosState)=> state.todos
+  )
+
+  const dispatch = useDispatch()
 
   const addHandler = (title: string) => {
     const newTodo: ITodo = {
@@ -21,34 +32,21 @@ export const TodosPage: React.FC = () => {
       id: Date.now(),
       completed: false
     }
-    setTodos(prev => [newTodo, ...todos])
+    dispatch(createTodo(newTodo))
   }
 
-  const toggleHandler = (id: number) => {
-    setTodos(prev => (
-      prev.map(todo => {
-        let comletedVal = todo.completed
-
-        if (todo.id === id) {
-          comletedVal = !todo.completed
-        }
-        
-        return { 
-          ...todo,
-          completed: comletedVal
-        }
-      })
-    ))
+  const toggleHandler = (todo: ITodo) => {
+    dispatch(doneTodo(todo))
   }
 
-  const removeHandler = (id: number) => {
+  const removeHandler = (todo: ITodo) => {
     const shouldRemove = window.confirm(
     // const shouldRemove = confirm(
       'Are you shure you want to delete the item?'
     )
 
     if (shouldRemove) {
-      setTodos(prev => prev.filter(todo => todo.id !== id))
+      dispatch(deleteTodo(todo))
     }
   }
   return (

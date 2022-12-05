@@ -1,25 +1,29 @@
 import React from 'react'
-import { ITodo } from '../interfaces'
+import { ITodo } from '../type'
 
-type TodoListProps = {
+type Props = {
   todos: ITodo[]
-  onToggle(id: number): void
-  onRemove: (id: number) => void
+  onToggle(todo: ITodo): void
+  onRemove: (todo: ITodo) => void
 }
 
-export const TodoList: React.FC<TodoListProps> = ({
+export const TodoList: React.FC<Props> = ({
   todos,
   onRemove,
   onToggle
 }) => {
 
+  if (typeof todos !== 'object') {
+    return <p className='center'>There are no todos yet</p>
+  }
+
   if (todos.length === 0) {
     return <p className='center'>There are no todos yet</p>
   }
 
-  const removeHandler = (event: React.MouseEvent, id: number) => {
+  const removeHandler = (event: React.MouseEvent, todo: ITodo) => {
     event.preventDefault()
-    onRemove(id)
+    onRemove(todo)
   }
 
   return (
@@ -36,12 +40,12 @@ export const TodoList: React.FC<TodoListProps> = ({
                 <input
                   type="checkbox"
                   checked={todo.completed}
-                  onChange={onToggle.bind(null, todo.id)}
+                  onChange={onToggle.bind(null, todo)}
                 />
                 <span>{todo.title}</span>
                 <i
                   className="material-icons red-text"
-                  onClick={(event) => removeHandler(event, todo.id)}
+                  onClick={(event) => removeHandler(event, todo)}
                 >
                   delete
                 </i>
